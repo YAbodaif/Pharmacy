@@ -10,7 +10,7 @@ export function navView(navid){
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2  mb-lg-0 ">
                       <li class="nav-item p-2 text-white " id="home-page">Home</li>
-                      <li class="nav-item p-2 text-white">Beauty</li>
+                      <li class="nav-item p-2 text-white" id="beauty-page">Beauty</li>
                       <li class="nav-item p-2 text-white">Personal Care</li>
                       <li class="nav-item p-2 text-white">Mom & Baby</li>
                       <li class="nav-item p-2 text-white">Vitamins & Nutrition</li>
@@ -92,3 +92,67 @@ export function footerView(navid){
   `;
   document.getElementById(navid).innerHTML=footerhtml;
 }
+
+export function beautyView(navid,apiData){
+  if (apiData.length>0){
+  let {title,price,image}=apiData;
+  let beautyhtml=`
+  <div class="container-fluid row flex-nowrap h-100">
+      <div class="col-4 a h-100">
+              <div class="container p-1 border border-3 border-primary ">
+                      <div class="sel-product">
+                      <table class="table  fs-6 fw-bold align-middle text-center " id="selprod">
+                              <tr>
+                              <td class="w-25"><input type="text" disabled class="w-100 text-center" name="pName" value="Teasdsdsd" ></td>
+                              <td  ><input type="text" disabled class="w-50 text-center border border-2 border-black" name="pQuantity" value="2" ></td>
+                              <td ><i class="bi bi-plus-square-dotted fs-5 fw-bolder text-primary"></i></span> <br> <i class="bi bi-dash-square-dotted fs-5 fw-bolder text-danger"></i></td>
+                              <td >EGP <input type="text" disabled class="w-50 text-center fs-5 text-black fw-bolder" name="pPrice" value="25" ></td>
+                              <td ><span>x</span></td>
+                          </tr>
+                      </table>
+                      </div>
+                      <div class="notes">
+                      <h5>Notes</h5>
+                      <textarea class="w-100" name="" id=""  rows="5"></textarea>
+                      </div>
+                      <div class="price">
+                            <h5 class="w-100 text-end">EGP 55.0</h5><br>
+                            <div class="w-100 text-end">
+                                <button class="btn btn-primary" type="submit" name="confirm">Confirm</button>
+                            </div>
+                      </div>
+      </div>
+    </div>
+    <div class="col-8 ">
+        <div class="products row" id="allProductData">
+  `
+  for (const i of apiData) {
+       beautyhtml +=`
+    
+              <div class="col-sm-6 col-md-4 col-lg-3  border-1 mt-2 shadow ">
+                <div class="position-relative w-100 h-100 text-center border-dark-subtle border align-items-center ">
+
+                <div class="h-50 ">
+                    <img  width="100px" height="150px" src=${i.image} class="">
+                </div>
+                 <span class="position-absolute top-0 end-0  p-1 rounded-circle   text-center fw-bolder bg-warning bg-opacity-75">${i.price} LE</span>  
+
+                 <div class="h-25 my-1">
+                 <p class="fw-boder ">${i.title}</p> 
+                 </div>
+
+                 <div class="h-25 align-bootom ">
+                    <a href="#" class="btn btn-primary mt-3 ">Add to cart</a>
+                 </div>
+             
+                </div>
+                
+            </div> 
+    
+  `;
+ }
+ console.log(apiData);
+ beautyhtml +=`</div> </div></div> </div>`
+
+  document.getElementById(navid).innerHTML=beautyhtml;
+}}

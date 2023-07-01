@@ -1,3 +1,6 @@
+
+import    {addtoCartNum ,selectAll,unselectAll} from "./functions.js";
+
 export function navView(navid){
     // let navshow=document.getElementById(navid);
     let navhtml=`
@@ -94,22 +97,34 @@ export function footerView(navid){
 }
 
 export function beautyView(navid,apiData){
+
   if (apiData.length>0){
-  let {title,price,image}=apiData;
+  let {id,title,price,image,category}=apiData;
+ console.log(apiData)
   let beautyhtml=`
   <div class="container-fluid row flex-nowrap h-100">
       <div class="col-4 a h-100">
               <div class="container p-1 border border-3 border-primary ">
-                      <div class="sel-product">
-                      <table class="table  fs-6 fw-bold align-middle text-center " id="selprod">
-                              <tr>
-                              <td class="w-25"><input type="text" disabled class="w-100 text-center" name="pName" value="Teasdsdsd" ></td>
-                              <td  ><input type="text" disabled class="w-50 text-center border border-2 border-black" name="pQuantity" value="2" ></td>
-                              <td ><i class="bi bi-plus-square-dotted fs-5 fw-bolder text-primary"></i></span> <br> <i class="bi bi-dash-square-dotted fs-5 fw-bolder text-danger"></i></td>
-                              <td >EGP <input type="text" disabled class="w-50 text-center fs-5 text-black fw-bolder" name="pPrice" value="25" ></td>
-                              <td ><span>x</span></td>
-                          </tr>
-                      </table>
+                      <div class="Brandes-Filter">
+                      <div class="d-flex justify-content-between">
+                      <h5 class="d-inline-block">Select Brandes</h5>
+                      <div class="fs-5 fw-bolder text-black px-3 text-end">
+                      <i class="bi bi-check-all" id="all-brands" ></i>
+                      <i class="bi bi-x-square" id="none-brands"></i>
+                      </div>
+                      </div> 
+                      <ul class="list-group">
+                      `
+        for (const i of apiData) {
+          beautyhtml +=`
+                        <li class="list-group-item">
+                          <input class="form-check-input me-1 brand-check" type="checkbox" value="" id="chck${i.id}">
+                          <label class="form-check-label stretched-link" for="chck${i.id}">${i.category}</label>
+                        </li>
+                        `
+        }
+        beautyhtml +=`
+                      </ul>
                       </div>
                       <div class="notes">
                       <h5>Notes</h5>
@@ -123,36 +138,52 @@ export function beautyView(navid,apiData){
                       </div>
       </div>
     </div>
-    <div class="col-8 ">
+
+    <div class="col-8 ">  
+        <div >
+        <i class="bi bi-cart4 fs-2 text-primary position-relative d-inline-block"></i>
+        <span class="position-absolute top-10 start-10 rounded bg-transparent text-danger fs-6" id="no-in-cart"> 0</span>  
+        </div>
         <div class="products row" id="allProductData">
-  `
-  for (const i of apiData) {
-       beautyhtml +=`
+ 
+        `
+        for (const i of apiData) {
+          beautyhtml +=`
     
               <div class="col-sm-6 col-md-4 col-lg-3  border-1 mt-2 shadow ">
                 <div class="position-relative w-100 h-100 text-center border-dark-subtle border align-items-center ">
 
                 <div class="h-50 ">
-                    <img  width="100px" height="150px" src=${i.image} class="">
+                    <img  width="100px" height="150px" src=${i.image} class="py-1">
                 </div>
                  <span class="position-absolute top-0 end-0  p-1 rounded-circle   text-center fw-bolder bg-warning bg-opacity-75">${i.price} LE</span>  
 
-                 <div class="h-25 my-1">
+                 <div class="h-25 py-2">
                  <p class="fw-boder ">${i.title}</p> 
                  </div>
 
-                 <div class="h-25 align-bootom ">
-                    <a href="#" class="btn btn-primary mt-3 ">Add to cart</a>
+                 <div class="h-25 py-2 align-bootom ">
+                    <button class="btn btn-primary mt-3 add-cart-btns"  id="addcard${i.id}">Add to cart</button>
                  </div>
              
                 </div>
                 
             </div> 
-    
   `;
- }
- console.log(apiData);
- beautyhtml +=`</div> </div></div> </div>`
+  // let xmid="addcard" +i.id;
+   
 
-  document.getElementById(navid).innerHTML=beautyhtml;
-}}
+ }
+ beautyhtml +=`</div> </div></div> </div>`
+ document.getElementById(navid).innerHTML=beautyhtml;
+ document.getElementById('all-brands').addEventListener('click',()=>selectAll('brand-check'));
+ document.getElementById('none-brands').addEventListener('click',()=>unselectAll('brand-check'));
+ let btcadd =document.getElementsByClassName('add-cart-btns');
+ let mn=0
+ for (const i of apiData) {
+
+  btcadd[mn].addEventListener('click',()=>addtoCartNum(i.id));
+mn++
+}
+}
+}

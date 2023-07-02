@@ -6,6 +6,13 @@ export async function logJSONData() {
     return jsonData;
   }
   var apidata=await logJSONData();
+
+  export async function logJSONDataCat() {
+    const response = await fetch("https://fakestoreapi.com/products/categories");
+    const jsonDataCat = await response.json();
+    return jsonDataCat;
+  }
+  var apidataCat=await logJSONDataCat();
 export function selectAll(x){
 
     let m=document.getElementsByClassName(x);
@@ -23,15 +30,10 @@ export function unselectAll(x){
 
  export function addtoCartNum(x3){
     let xyz= itemsInCart.filter((x)=>x.id == x3);
-    console.log( xyz.length)
     if(xyz.length==0){
-    // if(  ){
-    itemsInCart.push (apidata.find((x)=>x.id==x3));
-    let  v=Number( document.getElementById('no-in-cart').innerText);
-    document.getElementById('no-in-cart').innerText=  ++v ;
-   
-     console.log( apidata ,itemsInCart )
-    // }
+       itemsInCart.push (apidata.find((x)=>x.id==x3));
+        let  v=Number( document.getElementById('no-in-cart').innerText);
+        document.getElementById('no-in-cart').innerText=  ++v ;
     }
  }
 

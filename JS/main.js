@@ -96,16 +96,16 @@ export function footerView(navid){
   document.getElementById(navid).innerHTML=footerhtml;
 }
 
-export function beautyView(navid,apiData){
+export function beautyView(navid,apiData,apiDataCat){
 
   if (apiData.length>0){
   let {id,title,price,image,category}=apiData;
- console.log(apiData)
   let beautyhtml=`
   <div class="container-fluid row flex-nowrap h-100">
       <div class="col-4 a h-100">
-              <div class="container p-1 border border-3 border-primary ">
+              <div class="container p-1 border border-2 border-black border-end ">
                       <div class="Brandes-Filter">
+                      <div class="text-primary py-3 my-1"> <h4> Filter Proudects By Brands </h4></div>
                       <div class="d-flex justify-content-between">
                       <h5 class="d-inline-block">Select Brandes</h5>
                       <div class="fs-5 fw-bolder text-black px-3 text-end">
@@ -115,27 +115,22 @@ export function beautyView(navid,apiData){
                       </div> 
                       <ul class="list-group">
                       `
-        for (const i of apiData) {
+  if (apiDataCat.length>0){
+    let i2=1;
+       for (const i of apiDataCat) {
           beautyhtml +=`
                         <li class="list-group-item">
-                          <input class="form-check-input me-1 brand-check" type="checkbox" value="" id="chck${i.id}">
-                          <label class="form-check-label stretched-link" for="chck${i.id}">${i.category}</label>
+                          <input class="form-check-input me-1 brand-check" type="checkbox" value="" id="chck${i2}">
+                          <label class="form-check-label stretched-link" for="chck${i2}">${i}</label>
                         </li>
                         `
-        }
+         i2++ ;
+        }}
         beautyhtml +=`
                       </ul>
                       </div>
-                      <div class="notes">
-                      <h5>Notes</h5>
-                      <textarea class="w-100" name="" id=""  rows="5"></textarea>
-                      </div>
-                      <div class="price">
-                            <h5 class="w-100 text-end">EGP 55.0</h5><br>
-                            <div class="w-100 text-end">
-                                <button class="btn btn-primary" type="submit" name="confirm">Confirm</button>
-                            </div>
-                      </div>
+                      
+                     
       </div>
     </div>
 

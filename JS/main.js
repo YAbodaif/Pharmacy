@@ -1,5 +1,5 @@
 
-import    {addtoCartNum ,selectAll,unselectAll} from "./functions.js";
+import    {addtoCartNum ,selectAll,unselectAll,apiFilter} from "./functions.js";
 
 export function navView(navid){
     // let navshow=document.getElementById(navid);
@@ -14,10 +14,11 @@ export function navView(navid){
                     <ul class="navbar-nav me-auto mb-2  mb-lg-0 ">
                       <li class="nav-item p-2 text-white " id="home-page">Home</li>
                       <li class="nav-item p-2 text-white" id="beauty-page">Beauty</li>
-                      <li class="nav-item p-2 text-white">Personal Care</li>
-                      <li class="nav-item p-2 text-white">Mom & Baby</li>
-                      <li class="nav-item p-2 text-white">Vitamins & Nutrition</li>
-                      <li class="nav-item p-2 text-white">Prescriptions</li>
+                      <li class="nav-item p-2 text-white" id="personal-care-page">Personal Care</li>
+                      <li class="nav-item p-2 text-white" id="mom-baby-page">Mom & Baby</li>
+                      <li class="nav-item p-2 text-white" id="vitamins-page">Vitamins & Nutrition</li>
+                      <li class="nav-item p-2 text-white" id="prescriptions-page">Prescriptions</li>
+                      <li class="nav-item p-2 text-white" id="sign-in-page">Sign In</li>
                       <li class="nav-item p-2 text-white" id="about-page" >About</li>
                       <!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -96,14 +97,17 @@ export function footerView(navid){
   document.getElementById(navid).innerHTML=footerhtml;
 }
 
-export function beautyView(navid,apiData,apiDataCat){
+export function categoriesShow(navid,apiData,apiDataCat,pageTitle){
 
   if (apiData.length>0){
   let {id,title,price,image,category}=apiData;
-  let beautyhtml=`
-  <div class="container-fluid row flex-nowrap h-100">
-      <div class="col-4 a h-100">
-              <div class="container p-1 border border-2 border-black border-end ">
+  let categoriesShowhtml=`
+  <div class="container-fluid  p-2 text-center text-bg-secondary my-0   text-danger-emphasis">
+  <h1>${pageTitle}</h1>
+  </div>
+  <div class="container-fluid row flex-nowrap h-100 mt-1">
+      <div class="col-4  h-100 shadow">
+              <div class="container p-1   ">
                       <div class="Brandes-Filter">
                       <div class="text-primary py-3 my-1"> <h4> Filter Proudects By Brands </h4></div>
                       <div class="d-flex justify-content-between">
@@ -118,7 +122,7 @@ export function beautyView(navid,apiData,apiDataCat){
   if (apiDataCat.length>0){
     let i2=1;
        for (const i of apiDataCat) {
-          beautyhtml +=`
+        categoriesShowhtml +=`
                         <li class="list-group-item">
                           <input class="form-check-input me-1 brand-check" type="checkbox" value="" id="chck${i2}">
                           <label class="form-check-label stretched-link" for="chck${i2}">${i}</label>
@@ -126,7 +130,7 @@ export function beautyView(navid,apiData,apiDataCat){
                         `
          i2++ ;
         }}
-        beautyhtml +=`
+        categoriesShowhtml +=`
                       </ul>
                       </div>
                       
@@ -134,16 +138,16 @@ export function beautyView(navid,apiData,apiDataCat){
       </div>
     </div>
 
-    <div class="col-8 ">  
-        <div >
-        <i class="bi bi-cart4 fs-2 text-primary position-relative d-inline-block"></i>
-        <span class="position-absolute top-10 start-10 rounded bg-transparent text-danger fs-6" id="no-in-cart"> 0</span>  
+    <div class="col-8 shadow  ">  
+        <div class="text-center shadow  fs-4 " >
+        <span>Your Cart </span><i class="bi bi-cart4 fs-2 text-primary position-relative d-inline-block"> </i>
+        <span class="position-absolute top-10 start-10 rounded bg-transparent text-danger fs-5 fw-bolder" id="no-in-cart"> 0</span>  
         </div>
-        <div class="products row" id="allProductData">
+        <div class="products row" id="showAllProductData">
  
         `
         for (const i of apiData) {
-          beautyhtml +=`
+          categoriesShowhtml +=`
     
               <div class="col-sm-6 col-md-4 col-lg-3  border-1 mt-2 shadow ">
                 <div class="position-relative w-100 h-100 text-center border-dark-subtle border align-items-center ">
@@ -165,20 +169,59 @@ export function beautyView(navid,apiData,apiDataCat){
                 
             </div> 
   `;
-  // let xmid="addcard" +i.id;
-   
 
  }
- beautyhtml +=`</div> </div></div> </div>`
- document.getElementById(navid).innerHTML=beautyhtml;
+ categoriesShowhtml +=`</div> </div></div> </div>`
+ document.getElementById(navid).innerHTML=categoriesShowhtml;
  document.getElementById('all-brands').addEventListener('click',()=>selectAll('brand-check'));
  document.getElementById('none-brands').addEventListener('click',()=>unselectAll('brand-check'));
  let btcadd =document.getElementsByClassName('add-cart-btns');
- let mn=0
+ let num1=0
  for (const i of apiData) {
+  btcadd[num1].addEventListener('click',()=>addtoCartNum(i.id));
+  num1++
+  }
 
-  btcadd[mn].addEventListener('click',()=>addtoCartNum(i.id));
-mn++
+ let catClick =document.getElementsByClassName('brand-check');
+ let num2=1
+ for (const i of apiDataCat) {
+  let idOfElement ="chck"+num2
+  catClick[num2-1].addEventListener('click',()=>apiFilter(i,idOfElement));
+  num2++
+  }
 }
+}
+
+export function selectCategoriesShow(navid,apiData){
+
+  if (apiData.length>0){
+  let {id,title,price,image,category}=apiData;
+  let categoriesShowhtml="";
+        for (const i of apiData) {
+          categoriesShowhtml +=`
+    <div class="col-sm-6 col-md-4 col-lg-3  border-1 mt-2 shadow ">
+      <div class="position-relative w-100 h-100 text-center border-dark-subtle border align-items-center ">
+        <div class="h-50 ">
+          <img  width="100px" height="150px" src=${i.image} class="py-1">
+        </div>
+          <span class="position-absolute top-0 end-0  p-1 rounded-circle   text-center fw-bolder bg-warning bg-opacity-75">${i.price} LE</span>  
+        <div class="h-25 py-2">
+           <p class="fw-boder ">${i.title}</p> 
+        </div>
+        <div class="h-25 py-2 align-bootom ">
+          <button class="btn btn-primary mt-3 add-cart-btns"  id="addcard${i.id}">Add to cart</button>
+        </div>
+      </div>
+    </div> 
+  `;
+
+ }
+ document.getElementById(navid).innerHTML=categoriesShowhtml;
+ let btcadd =document.getElementsByClassName('add-cart-btns');
+ let num1=0
+ for (const i of apiData) {
+  btcadd[num1].addEventListener('click',()=>addtoCartNum(i.id));
+  num1++
+  }
 }
 }

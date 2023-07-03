@@ -1,11 +1,14 @@
+import {selectCategoriesShow}  from "./main.js";
+
 var itemsInCart=[];
 var numcart=0;
-export async function logJSONData() {
-    const response = await fetch("https://fakestoreapi.com/products?limit=5");
+export async function logJSONData(catName) {
+    let urldata="https://fakestoreapi.com/products" + catName ;
+    const response = await fetch(urldata);
     const jsonData = await response.json();
     return jsonData;
   }
-  var apidata=await logJSONData();
+  var apidata=await logJSONData("");
 
   export async function logJSONDataCat() {
     const response = await fetch("https://fakestoreapi.com/products/categories");
@@ -13,6 +16,7 @@ export async function logJSONData() {
     return jsonDataCat;
   }
   var apidataCat=await logJSONDataCat();
+
 export function selectAll(x){
 
     let m=document.getElementsByClassName(x);
@@ -36,4 +40,12 @@ export function unselectAll(x){
         document.getElementById('no-in-cart').innerText=  ++v ;
     }
  }
+ export async function apiFilter(catName,idName){
+  if (document.getElementById(idName).checked != false){
+  let urldata="https://fakestoreapi.com/products/category/" + catName ;
+    const response = await fetch(urldata);
+    const jsonData = await response.json();
+   return selectCategoriesShow('showAllProductData', jsonData)
+  }
+   }
 

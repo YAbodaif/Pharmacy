@@ -1,9 +1,10 @@
 
 // the main class
 export default class cnavView{
+
+//class prorerty
   constructor() { 
     this.itemsInCart=[];
-    // this.numcart=0;
     this.abouthtml=`
    <div class="container">
        <img src="./IMAGES/about-us.jpg" class="img-fluid" alt="">
@@ -40,6 +41,7 @@ export default class cnavView{
     `;
    }
 
+//class method
 aboutView(navid){
  document.getElementById(navid).innerHTML=this.abouthtml;
 }
@@ -177,6 +179,7 @@ let apidatac=apidata.filter((x)=>x.category==catName);
  }
   }
 }
+
 // call the main class
 class xxxx  extends cnavView{
   constructor() {
@@ -186,7 +189,6 @@ class xxxx  extends cnavView{
 var cnavViewnew =new xxxx;
 
 // the main fuctions
-
 export async function logJSONData(catName) {
     let urldata="https://dummyjson.com/products" + catName ;
     const response = await fetch(urldata);
@@ -219,21 +221,20 @@ export function addtoCartNum(x3){
     if(xyz.length==0){
       apidata.find((x)=>x.id==x3).qu=1
       cnavViewnew.itemsInCart.push (apidata.find((x)=>x.id==x3));
-       console.log(cnavViewnew.itemsInCart);
+localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
         let  v=Number( document.getElementById('no-in-cart').innerText);
         document.getElementById('no-in-cart').innerText=  ++v ;
     }else{
       apidata.find((x)=>x.id==x3).qu=Number( apidata.find((x)=>x.id==x3).qu)+1
       cnavViewnew.itemsInCart.push (apidata.find((x)=>x.id==x3));
-      console.log(cnavViewnew.itemsInCart);
-       let  v=Number( document.getElementById('no-in-cart').innerText);
+      localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
+      let  v=Number( document.getElementById('no-in-cart').innerText);
        document.getElementById('no-in-cart').innerText=  ++v ;
     }
 }
 
 
-
-
+//add on click function to navbar
 document.getElementById('about-page').addEventListener('click',()=>cnavViewnew.aboutView('main-content'));
 document.getElementById('home-page').addEventListener('click',()=>cnavViewnew.homeView('main-content'));
 let apidata0=apidata.filter((x)=>x.category==apidataCat[0]);

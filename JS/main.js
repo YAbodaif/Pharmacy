@@ -1,6 +1,9 @@
 
+
+
+
 // the main class
-export default class cnavView{
+ class cnavView{
 
 //class prorerty
   constructor() { 
@@ -50,7 +53,7 @@ homeView(navid){
 }
 categoriesShow(navid,apiData,apiDataCat,pageTitle){
  if (apiData.length>0){
- let {id,title,price,image,category}=apiData;
+ let {id,title,price,thumbnail,category}=apiData;
  let categoriesShowhtml=`
  <div class="container-fluid  p-2 text-center text-bg-secondary my-0   text-danger-emphasis">
  <h1>${pageTitle}</h1>
@@ -86,12 +89,13 @@ categoriesShow(navid,apiData,apiDataCat,pageTitle){
 
    <div class="col-8 shadow  ">  
        <div class="text-center shadow  fs-4 " >
-       <span>Your Cart </span><i class="bi bi-cart4 fs-2 text-primary position-relative d-inline-block" id="the-in-cart"> </i>
-       <span class="position-absolute top-10 start-10 rounded bg-transparent text-danger fs-5 fw-bolder" id="no-in-cart"> 0</span>  
+       <i class="bi bi-cart4 fs-4 btn btn-primary position-relative d-inline-block" id="the-in-cart" > Items in Cart </i>
+       <span class="position-absolute top-10 start-20 border p-1 border-2 border-danger-subtle rounded-circle bg-transparent text-danger fs-5 fw-bolder" id="no-in-cart"> ${this.itemsInCart.length}</span>  
        </div>
        <div class="products row" id="showAllProductData">
 
        `
+
        for (const i of apiData) {
          categoriesShowhtml +=`
    
@@ -121,6 +125,8 @@ categoriesShowhtml +=`</div> </div></div> </div>`
 document.getElementById(navid).innerHTML=categoriesShowhtml;
 document.getElementById('all-brands').addEventListener('click',()=>selectAll('brand-check'));
 document.getElementById('none-brands').addEventListener('click',()=>unselectAll('brand-check'));
+document.getElementById('the-in-cart').addEventListener('click',()=>this.cartItemsShow('main-content',JSON.parse(localStorage.getItem('cartdata'))));
+
 let btcadd =document.getElementsByClassName('add-cart-btns');
 let num1=0
 for (const i of apiData) {
@@ -170,15 +176,78 @@ for (const i of apiData) {
  }
 }
 }
+cartItemsShow(navid,apiData){
+
+  let {id,title,price,thumbnail,category}=apiData;
+  let cartShowhtml =`
+  <div class="container row">
+      <div class="col-8" id="itemsOfCartDetails">
+      <table class="table table-striped  w-100 align-middle">
+        <thead>
+          <tr> <th>#</th> <th>Thumbnail</th> <th>Item</th> <th>Price</th> <th>Qty</th> <th>SubTotal</th> </tr>
+        </thead>
+      <tbody>
+         `
+     let index=1;
+     let allQty=0;
+     let allPrice=0;
+     for (const i of apiData) {
+              cartShowhtml +=` <tr>
+              <td >${index}</td>
+              <td > <img  width="100px" height="100px" src=${i.thumbnail} class="py-1"> </td>
+              <td >${i.title}</td>
+              <td >${i.price}</td>
+              <td>${i.qu}</td>
+              <td>${i.price*i.qu}</td> 
+       
+             
+              `;
+              
+              index++;
+              allQty +=Number( i.qu);
+              allPrice += i.price*i.qu;
+     }
+     cartShowhtml +=`
+        
+      </tbody>
+  </table>
+      </div>
+      <div class="col-4" id="itemsOfCartSummary">
+        <div class="card">
+        <h5 class="card-header">Your Order Summary</h5>
+        <div class="card-body">
+        <table class="table table-striped border border-2 w-100">
+        <tr>  <th></th> <th></th> </tr>
+        <tr> <td> No Of Items </td> <td>${apiData.length} </td> </tr>
+        <tr> <td> Quantity Of all Items </td> <td>${allQty} </td> </tr>
+        <tr> <td> The Total Price </td> <td>EGP ${allPrice} </td> </tr>
+      </table>
+          <a href="#" class="btn btn-primary">Click to continue process </a>
+        </div>
+      </div>
+
+      </div>
+  </div>
+  `
+ document.getElementById(navid).innerHTML=cartShowhtml;
+  
+
+ }
 
 apiFilter(catName,idName){
  if (document.getElementById(idName).checked != false){
 let apidatac=apidata.filter((x)=>x.category==catName);
-//  console.log("dc" , apidatac , " -data " , apidata);
  return  this.selectCategoriesShow('showAllProductData', apidatac)
  }
   }
+
+  deleteTask(index){
+    cnavViewnew.itemsInCart.splice(index,1);
+    localStorage.setItem('cartdata',JSON.stringify(cnavViewnew.itemsInCart));
+    cnavViewnew.cartItemsShow('main-content',JSON.parse(localStorage.getItem('cartdata')));
+  }
 }
+
 
 // call the main class
 class xxxx  extends cnavView{
@@ -219,20 +288,21 @@ export function unselectAll(x){
 export function addtoCartNum(x3){
     let xyz= cnavViewnew.itemsInCart.filter((x)=>x.id == x3);
     if(xyz.length==0){
-      apidata.find((x)=>x.id==x3).qu=1
+      apidata.find((x)=>x.id==x3)
       cnavViewnew.itemsInCart.push (apidata.find((x)=>x.id==x3));
+      cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu=1
 localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
         let  v=Number( document.getElementById('no-in-cart').innerText);
         document.getElementById('no-in-cart').innerText=  ++v ;
     }else{
-      apidata.find((x)=>x.id==x3).qu=Number( apidata.find((x)=>x.id==x3).qu)+1
-      cnavViewnew.itemsInCart.push (apidata.find((x)=>x.id==x3));
-      localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
+      cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu=Number( cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu)+1
+localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
       let  v=Number( document.getElementById('no-in-cart').innerText);
-       document.getElementById('no-in-cart').innerText=  ++v ;
+      //  document.getElementById('no-in-cart').innerText=  ++v ;
     }
 }
 
+ 
 
 //add on click function to navbar
 document.getElementById('about-page').addEventListener('click',()=>cnavViewnew.aboutView('main-content'));
@@ -245,5 +315,5 @@ let apidata2=apidata.filter((x)=>x.category==apidataCat[2]);
 document.getElementById('mom-baby-page').addEventListener('click',()=>cnavViewnew.categoriesShow('main-content',apidata2,apidataCat));
 let apidata3=apidata.filter((x)=>x.category==apidataCat[3]);
 document.getElementById('vitamins-page').addEventListener('click',()=>cnavViewnew.categoriesShow('main-content',apidata3,apidataCat));
-
+ 
 

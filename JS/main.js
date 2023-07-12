@@ -1,5 +1,6 @@
 
 let Myclass="";
+let xButton=0;
 
 localStorage.setItem('cartdata',"")
 // the main class
@@ -291,12 +292,14 @@ localStorage.setItem('cartdata', JSON.stringify(Myclass.itemsInCart) )
         let  v=Number( document.getElementById('no-in-cart').innerText);
         document.getElementById('no-in-cart').innerText=  ++v ;
     }else{
-      Myclass.itemsInCart.find((x)=>x.id==x3).qu=Number( Myclass.itemsInCart.find((x)=>x.id==x3).qu)+1
-localStorage.setItem('cartdata', JSON.stringify(Myclass.itemsInCart) )
+   let msg=window.confirm("You Add This Proudect Before Ary You shore You Want to add Anothe one of it","Warnning");
+   if(msg==true){
+    Myclass.itemsInCart.find((x)=>x.id==x3).qu=Number( Myclass.itemsInCart.find((x)=>x.id==x3).qu)+1
+    localStorage.setItem('cartdata', JSON.stringify(Myclass.itemsInCart) )
       let  v=Number( document.getElementById('no-in-cart').innerText);
-      //  document.getElementById('no-in-cart').innerText=  ++v ;
-    }
+    }    }
 }
+
 
  
 

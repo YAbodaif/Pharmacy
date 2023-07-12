@@ -1,9 +1,9 @@
 
+let Myclass="";
 
-
-
+localStorage.setItem('cartdata',"")
 // the main class
- class cnavView{
+ class cnaView{
 
 //class prorerty
   constructor() { 
@@ -87,11 +87,12 @@ categoriesShow(navid,apiData,apiDataCat,pageTitle){
                      </ul>
                      </div></div></div>
 
-   <div class="col-8 shadow  ">  
-       <div class="text-center shadow  fs-4 " >
-       <i class="bi bi-cart4 fs-4 btn btn-primary position-relative d-inline-block" id="the-in-cart" > Items in Cart </i>
-       <span class="position-absolute top-10 start-20 border p-1 border-2 border-danger-subtle rounded-circle bg-transparent text-danger fs-5 fw-bolder" id="no-in-cart"> ${this.itemsInCart.length}</span>  
-       </div>
+   <div class="col-8 shadow  position-relative ">  
+       <div class="text-start shadow  " >
+       <span class=""text-start fw-bold ">Click cart to show Your Slected prouducts</span>
+       <i class="bi bi-cart4 fs-1 btn text-danger d-inline-block" id="the-in-cart" data-bs-toggle="modal" data-bs-target="#exampleModal">        <span class="position-absolute top-10 end-10 p-1 bg-transparent text-danger fs-5 fw-bolder" id="no-in-cart"> ${this.itemsInCart.length}</span>  
+       </i>
+   </div>
        <div class="products row" id="showAllProductData">
 
        `
@@ -125,7 +126,12 @@ categoriesShowhtml +=`</div> </div></div> </div>`
 document.getElementById(navid).innerHTML=categoriesShowhtml;
 document.getElementById('all-brands').addEventListener('click',()=>selectAll('brand-check'));
 document.getElementById('none-brands').addEventListener('click',()=>unselectAll('brand-check'));
-document.getElementById('the-in-cart').addEventListener('click',()=>this.cartItemsShow('main-content',JSON.parse(localStorage.getItem('cartdata'))));
+
+
+  document.getElementById('the-in-cart').addEventListener('click',()=>this.cartItemsShow('Cart-Model-id',localStorage.getItem('cartdata')));
+
+
+
 
 let btcadd =document.getElementsByClassName('add-cart-btns');
 let num1=0
@@ -143,7 +149,7 @@ for (const i of apiData) {
 
 }
 }
-selectCategoriesShow(navid,apiData){
+brandsShow(navid,apiData){
 
  if (apiData.length>0){
  let {id,title,price,thumbnail,category}=apiData;
@@ -177,8 +183,9 @@ for (const i of apiData) {
 }
 }
 cartItemsShow(navid,apiData){
-
-  let {id,title,price,thumbnail,category}=apiData;
+ 
+  let myProduct=JSON.parse(apiData); 
+  let {id,title,price,thumbnail,category}=myProduct ;
   let cartShowhtml =`
   <div class="container row">
       <div class="col-8" id="itemsOfCartDetails">
@@ -191,7 +198,7 @@ cartItemsShow(navid,apiData){
      let index=1;
      let allQty=0;
      let allPrice=0;
-     for (const i of apiData) {
+     for (const i of myProduct) {
               cartShowhtml +=` <tr>
               <td >${index}</td>
               <td > <img  width="100px" height="100px" src=${i.thumbnail} class="py-1"> </td>
@@ -208,95 +215,84 @@ cartItemsShow(navid,apiData){
               allPrice += i.price*i.qu;
      }
      cartShowhtml +=`
-        
       </tbody>
   </table>
       </div>
-      <div class="col-4" id="itemsOfCartSummary">
-        <div class="card">
+        <div class="card bg-body-secondary text-danger fs-5 fw-bold">
         <h5 class="card-header">Your Order Summary</h5>
         <div class="card-body">
         <table class="table table-striped border border-2 w-100">
         <tr>  <th></th> <th></th> </tr>
-        <tr> <td> No Of Items </td> <td>${apiData.length} </td> </tr>
+        <tr> <td> No Of Items </td> <td>${myProduct.length} </td> </tr>
         <tr> <td> Quantity Of all Items </td> <td>${allQty} </td> </tr>
         <tr> <td> The Total Price </td> <td>EGP ${allPrice} </td> </tr>
       </table>
-          <a href="#" class="btn btn-primary">Click to continue process </a>
         </div>
       </div>
 
       </div>
-  </div>
   `
  document.getElementById(navid).innerHTML=cartShowhtml;
-  
 
  }
 
 apiFilter(catName,idName){
  if (document.getElementById(idName).checked != false){
 let apidatac=apidata.filter((x)=>x.category==catName);
- return  this.selectCategoriesShow('showAllProductData', apidatac)
+unselectAll('brand-check');
+document.getElementById(idName).checked=true;
+ return  this.brandsShow('showAllProductData', apidatac)
  }
   }
-
   deleteTask(index){
-    cnavViewnew.itemsInCart.splice(index,1);
-    localStorage.setItem('cartdata',JSON.stringify(cnavViewnew.itemsInCart));
-    cnavViewnew.cartItemsShow('main-content',JSON.parse(localStorage.getItem('cartdata')));
+    Myclass.itemsInCart.splice(index,1);
+    localStorage.setItem('cartdata',JSON.stringify(Myclass.itemsInCart));
+    Myclass.cartItemsShow('main-content',JSON.parse(localStorage.getItem('cartdata')));
   }
 }
 
 
 // call the main class
-class xxxx  extends cnavView{
-  constructor() {
-      super();
-    } 
-};
-var cnavViewnew =new xxxx;
+ Myclass =new cnaView;
 
 // the main fuctions
-export async function logJSONData(catName) {
+ async function logJSONData(catName) {
     let urldata="https://dummyjson.com/products" + catName ;
     const response = await fetch(urldata);
     const jsonData = await response.json();
     return jsonData.products ;
 }
   var apidata=await logJSONData("");
-  console.log(apidata);
-export async function logJSONDataCat() {
+ async function logJSONDataCat() {
     const response = await fetch("https://dummyjson.com/products/categories");
     const jsonDataCat = await response.json();
     return jsonDataCat;
 }
   var apidataCat=await logJSONDataCat();
-  console.log(apidataCat);
-export function selectAll(x){
+ function selectAll(x){
     let m=document.getElementsByClassName(x);
     for (const i of m){
     i.checked =true;
     }
 }
-export function unselectAll(x){
+ function unselectAll(x){
     let m=document.getElementsByClassName(x);
     for (const i of m){
     i.checked =false;
 }
 }
-export function addtoCartNum(x3){
-    let xyz= cnavViewnew.itemsInCart.filter((x)=>x.id == x3);
+ function addtoCartNum(x3){
+    let xyz= Myclass.itemsInCart.filter((x)=>x.id == x3);
     if(xyz.length==0){
       apidata.find((x)=>x.id==x3)
-      cnavViewnew.itemsInCart.push (apidata.find((x)=>x.id==x3));
-      cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu=1
-localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
+      Myclass.itemsInCart.push (apidata.find((x)=>x.id==x3));
+      Myclass.itemsInCart.find((x)=>x.id==x3).qu=1
+localStorage.setItem('cartdata', JSON.stringify(Myclass.itemsInCart) )
         let  v=Number( document.getElementById('no-in-cart').innerText);
         document.getElementById('no-in-cart').innerText=  ++v ;
     }else{
-      cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu=Number( cnavViewnew.itemsInCart.find((x)=>x.id==x3).qu)+1
-localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
+      Myclass.itemsInCart.find((x)=>x.id==x3).qu=Number( Myclass.itemsInCart.find((x)=>x.id==x3).qu)+1
+localStorage.setItem('cartdata', JSON.stringify(Myclass.itemsInCart) )
       let  v=Number( document.getElementById('no-in-cart').innerText);
       //  document.getElementById('no-in-cart').innerText=  ++v ;
     }
@@ -305,15 +301,19 @@ localStorage.setItem('cartdata', JSON.stringify(cnavViewnew.itemsInCart) )
  
 
 //add on click function to navbar
-document.getElementById('about-page').addEventListener('click',()=>cnavViewnew.aboutView('main-content'));
-document.getElementById('home-page').addEventListener('click',()=>cnavViewnew.homeView('main-content'));
+document.getElementById('about-page').addEventListener('click',()=>Myclass.aboutView('main-content'));
+document.getElementById('home-page').addEventListener('click',()=>Myclass.homeView('main-content'));
 let apidata0=apidata.filter((x)=>x.category==apidataCat[0]);
-document.getElementById('beauty-page').addEventListener('click', () => cnavViewnew.categoriesShow('main-content', apidata0, apidataCat,'Beauty'));
+document.getElementById('beauty-page').addEventListener('click', () => Myclass.categoriesShow('main-content', apidata0, apidataCat,'Beauty'));
 let apidata1=apidata.filter((x)=>x.category==apidataCat[1]);
-document.getElementById('personal-care-page').addEventListener('click',()=>cnavViewnew.categoriesShow('main-content',apidata1,apidataCat,'Personal Care'));
+document.getElementById('personal-care-page').addEventListener('click',()=>Myclass.categoriesShow('main-content',apidata1,apidataCat,'Personal Care'));
 let apidata2=apidata.filter((x)=>x.category==apidataCat[2]);
-document.getElementById('mom-baby-page').addEventListener('click',()=>cnavViewnew.categoriesShow('main-content',apidata2,apidataCat));
+document.getElementById('mom-baby-page').addEventListener('click',()=>Myclass.categoriesShow('main-content',apidata2,apidataCat,'Mome and baby'));
 let apidata3=apidata.filter((x)=>x.category==apidataCat[3]);
-document.getElementById('vitamins-page').addEventListener('click',()=>cnavViewnew.categoriesShow('main-content',apidata3,apidataCat));
+document.getElementById('vitamins-page').addEventListener('click',()=>Myclass.categoriesShow('main-content',apidata3,apidataCat,'Vitamins & Nutrition'));
+let apidata4=apidata.filter((x)=>x.category==apidataCat[4]);
+document.getElementById('prescriptions-page').addEventListener('click',()=>Myclass.categoriesShow('main-content',apidata4,apidataCat,'Prescriptions'));
  
+
+
 
